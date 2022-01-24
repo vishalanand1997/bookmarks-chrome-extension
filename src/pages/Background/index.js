@@ -1,6 +1,16 @@
+import createNotes from "./create_notes"
+
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
-        console.log(request)
+        switch (request.type) {
+            case "CREATE_NOTES":
+                createNotes(request)
+                break;
+
+            default:
+                break;
+        }
+
         // chrome.tabs.captureVisibleTab(
         //     null,
         //     {},

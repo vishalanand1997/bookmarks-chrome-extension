@@ -39,7 +39,11 @@ function ScreenShort() {
     const handleClickOpen = () => {
         setOpen(true);
     }
-
+    const openInNewWindow = () => {
+        chrome.runtime.sendMessage({ type: "OPEN_SCREENSHORT_IN_WINDOW", data: croppedImage }, function (response) {
+            console.log("JSX Res", response.dataUrl);
+        });
+    }
     const handleClose = () => {
         setOpen(false);
     };
@@ -208,7 +212,7 @@ function ScreenShort() {
                     Download
                 </a>
                 <a
-                    // onClick={showCroppedImage}
+                    onClick={openInNewWindow}
                     id="openInWindow"
                 // href='#'
                 >

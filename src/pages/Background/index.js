@@ -6,21 +6,21 @@ chrome.runtime.onMessage.addListener(
             case "CREATE_NOTES":
                 createNotes(request)
                 break;
-
+            case "TAKE_SCREENSHORT":
+                chrome.tabs.captureVisibleTab(
+                    null,
+                    {},
+                    function (dataUrl) {
+                        chrome.tabs.create({ url: "screen.html" }, () => {
+                            console.log("DATA", dataUrl);
+                            chrome.storage.local.set({ data: JSON.stringify(dataUrl) });
+                        });
+                    })
+                sendResponse({ imgSrc: dataUrl });
+                break;
             default:
                 break;
         }
-
-        // chrome.tabs.captureVisibleTab(
-        //     null,
-        //     {},
-        //     function (dataUrl) {
-        //         chrome.tabs.create({ url: "screen.html" }, () => {
-        //             console.log("DATA", dataUrl);
-        //             chrome.storage.local.set({ data: JSON.stringify(dataUrl) });
-        //         });
-        //     })
-        // sendResponse({ imgSrc: dataUrl });
     }
 );
 

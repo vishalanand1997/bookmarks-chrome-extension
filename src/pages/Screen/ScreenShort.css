@@ -6,8 +6,9 @@
     bottom: 80px;
 }
 
-button {
+a {
     padding: 8px;
+    text-decoration: none;
     border: none;
     border-radius: 15px;
     background: orchid;

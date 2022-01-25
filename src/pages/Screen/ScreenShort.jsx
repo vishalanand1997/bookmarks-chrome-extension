@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import "./ScreenShort.css";
 import Cropper from 'react-easy-crop'
+import { useEffect } from 'react';
 function ScreenShort() {
     const [screenshort, setScreenshort] = React.useState("")
     const [crop, setCrop] = useState({ x: 0, y: 0 })
@@ -17,9 +18,24 @@ function ScreenShort() {
         chrome.storage.local.get("data", (data) => {
             setScreenshort(JSON.parse(data.data))
             console.log("SCREENSHORT", data.data);
-        })
+        });
     }, [])
-
+    useEffect(async () => {
+        try {
+            const croppedImage = await getCroppedImg(
+                screenshort,
+                croppedAreaPixels,
+                rotation
+            )
+            console.log('donee', croppedImage)
+            let saveImg = document.getElementById('downloadScreenshort');
+            saveImg.href = croppedImage
+            saveImg.download = "screenshort.jpg";
+            setCroppedImage(croppedImage)
+        } catch (e) {
+            console.error(e)
+        }
+    }, [croppedAreaPixels])
     const showCroppedImage = useCallback(async () => {
         try {
             const croppedImage = await getCroppedImg(
@@ -27,12 +43,15 @@ function ScreenShort() {
                 croppedAreaPixels,
                 rotation
             )
-            console.log('donee', { croppedImage })
+            console.log('donee', croppedImage)
+            let saveImg = document.getElementById('downloadScreenshort');
+            saveImg.href = croppedImage
+            saveImg.download = "screenshort.jpg";
             setCroppedImage(croppedImage)
         } catch (e) {
             console.error(e)
         }
-    }, [croppedAreaPixels, rotation])
+    }, [croppedAreaPixels])
     const createImage = (url) =>
         new Promise((resolve, reject) => {
             const image = new Image()
@@ -153,11 +172,13 @@ function ScreenShort() {
                     }}
                     className="zoom-range"
                 />
-                <button
+                <a
                     onClick={showCroppedImage}
+                    id="downloadScreenshort"
+                    href='#'
                 >
-                    Show Result
-                </button>
+                    Download
+                </a>
             </div>
         </div>);
 }

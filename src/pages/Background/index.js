@@ -18,6 +18,12 @@ chrome.runtime.onMessage.addListener(
                     })
                 sendResponse({ imgSrc: dataUrl });
                 break;
+            case "OPEN_SCREENSHORT_IN_WINDOW":
+                console.log("OPen Screenshort", request);
+                chrome.storage.local.set({ cropped: request.data }, () => {
+                    chrome.windows.create({ url: "all-notes.html" })
+                });
+                break;
             default:
                 break;
         }

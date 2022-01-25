@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(
             case "OPEN_SCREENSHORT_IN_WINDOW":
                 console.log("OPen Screenshort", request);
                 chrome.storage.local.set({ cropped: request.data }, () => {
-                    chrome.windows.create({ url: "all-notes.html" })
+                    chrome.windows.create({ url: "all-notes.html", type: "popup" })
                 });
                 break;
             default:

@@ -3,7 +3,7 @@ import './Popup.css';
 
 const Popup = () => {
   const takeScreentShort = () => {
-    chrome.runtime.sendMessage({ msg: "capture" }, function (response) {
+    chrome.runtime.sendMessage({ type: "TAKE_SCREENSHORT", msg: "capture" }, function (response) {
       console.log("JSX Res", response.dataUrl);
     });
   }

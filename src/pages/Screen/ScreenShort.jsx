@@ -2,6 +2,30 @@ import React, { useState, useCallback } from 'react';
 import "./ScreenShort.css";
 import Cropper from 'react-easy-crop'
 import { useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import CloseIcon from '@material-ui/icons/Close';
+import Slide from '@material-ui/core/Slide';
+import Grid from '@material-ui/core/Grid';
+
+const useStyles = makeStyles((theme) => ({
+    appBar: {
+        position: 'relative',
+    },
+    title: {
+        marginLeft: theme.spacing(2),
+        flex: 1,
+    },
+}));
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 function ScreenShort() {
     const [screenshort, setScreenshort] = React.useState("")
     const [crop, setCrop] = useState({ x: 0, y: 0 })
@@ -9,15 +33,22 @@ function ScreenShort() {
     const [rotation, setRotation] = useState(0)
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
     const [croppedImage, setCroppedImage] = useState(null)
+    const classes = useStyles();
+    const [open, setOpen] = React.useState(false);
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    }
+
+    const handleClose = () => {
+        setOpen(false);
+    };
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels)
-        console.log("On CropComplete", croppedArea, croppedAreaPixels)
     }, [])
     React.useEffect(() => {
         chrome.storage.local.get("data", (data) => {
             setScreenshort(JSON.parse(data.data))
-            console.log("SCREENSHORT", data.data);
         });
     }, [])
     useEffect(async () => {
@@ -27,10 +58,11 @@ function ScreenShort() {
                 croppedAreaPixels,
                 rotation
             )
-            console.log('donee', croppedImage)
             let saveImg = document.getElementById('downloadScreenshort');
-            saveImg.href = croppedImage
-            saveImg.download = "screenshort.jpg";
+            saveImg.href = croppedImage;
+            let currentDate = new Date().toLocaleString();
+            let completeData = currentDate.split(",")
+            saveImg.download = `screenshort_${completeData[0] + completeData[1]}.jpg`;
             setCroppedImage(croppedImage)
         } catch (e) {
             console.error(e)
@@ -43,7 +75,6 @@ function ScreenShort() {
                 croppedAreaPixels,
                 rotation
             )
-            console.log('donee', croppedImage)
             let saveImg = document.getElementById('downloadScreenshort');
             saveImg.href = croppedImage
             saveImg.download = "screenshort.jpg";
@@ -79,9 +110,6 @@ function ScreenShort() {
         }
     }
 
-    /**
-     * This function was adapted from the one in the ReadMe of https://github.com/DominicTobias/react-image-crop
-     */
     async function getCroppedImg(
         imageSrc,
         pixelCrop,
@@ -179,7 +207,35 @@ function ScreenShort() {
                 >
                     Download
                 </a>
+                <a
+                    // onClick={showCroppedImage}
+                    id="openInWindow"
+                // href='#'
+                >
+                    Open in window
+                </a>
+                <a
+                    onClick={handleClickOpen}
+                    id="showResult"
+                >
+                    Show Result
+                </a>
             </div>
+            <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+                            <CloseIcon />
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title}>
+                            ScreenShort
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Grid item xs={12}>
+                    <img src={croppedImage} alt="No Image" width="100%" className='croppedImageDialog' />
+                </Grid>
+            </Dialog>
         </div>);
 }
 

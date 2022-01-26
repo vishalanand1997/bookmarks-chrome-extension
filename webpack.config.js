@@ -43,7 +43,7 @@ var options = {
     contentScript: path.join(__dirname, 'src', 'pages', 'Content', 'index.js'),
     devtools: path.join(__dirname, 'src', 'pages', 'Devtools', 'index.js'),
     panel: path.join(__dirname, 'src', 'pages', 'Panel', 'index.jsx'),
-    "create-notes": path.join(__dirname, 'src', "pages", 'CreateNotes', 'index.jsx'),
+    "notes": path.join(__dirname, 'src', "pages", 'Notes', 'index.jsx'),
     "all-notes": path.join(__dirname, 'src', "pages", 'AllNotes', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
@@ -197,9 +197,9 @@ var options = {
       cache: false,
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'src', 'pages', 'CreateNotes', 'index.html'),
-      filename: 'create-notes.html',
-      chunks: ['create-notes'],
+      template: path.join(__dirname, 'src', 'pages', 'Notes', 'index.html'),
+      filename: 'notes.html',
+      chunks: ['notes'],
       cache: false,
     }),
     new HtmlWebpackPlugin({

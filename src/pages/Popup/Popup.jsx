@@ -10,7 +10,7 @@ const Popup = () => {
 
   const showAllNotes = () => {
     chrome.tabs.create({
-      url: "all-notes.html"
+      url: "notes.html?page=all"
     })
   }
 

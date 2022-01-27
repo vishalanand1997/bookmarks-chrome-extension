@@ -1,4 +1,5 @@
 import createNotes from "./create_notes"
+chrome.storage.sync.set({ notes: [] })
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {

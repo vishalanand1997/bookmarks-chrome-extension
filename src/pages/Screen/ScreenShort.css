@@ -66,10 +66,11 @@ a {
     position: absolute;
     bottom: 20px;
     left: 50%;
-    width: 90%;
-    transform: translateX(-50%);
+    width: 100%;
+    transform: translate(-50%,-50%);
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .slider {

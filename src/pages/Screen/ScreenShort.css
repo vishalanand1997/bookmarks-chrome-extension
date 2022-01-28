@@ -29,6 +29,20 @@ a {
     width: 11%;
     text-align: center;
 }
+#copy {
+    padding: 8px;
+    text-decoration: none;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    font-weight: bold;
+    position: relative;
+    top: 40%;
+    cursor: pointer;
+    margin-left: 20px;
+    width: 11%;
+    text-align: center;
+}
 
 #showResult {
     padding: 8px;

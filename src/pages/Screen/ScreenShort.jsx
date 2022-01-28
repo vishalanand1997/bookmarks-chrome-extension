@@ -28,7 +28,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function ScreenShort() {
-    const [screenshort, setScreenshort] = React.useState("")
+    const [screenshort, setScreenshort] = React.useState("");
     const [croppedImage, setCroppedImage] = useState(null)
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
@@ -97,7 +97,53 @@ function ScreenShort() {
     const handleClose = () => {
         setOpen(false);
     };
-
+    const createImage = (options) => {
+        options = options || {};
+        const img = document.createElement("img");
+        if (options.src) {
+          img.src = options.src;
+        }
+        return img;
+      };
+      
+      const copyToClipboard = async (pngBlob) => {
+        try {
+          await navigator.clipboard.write([
+            // eslint-disable-next-line no-undef
+            new ClipboardItem({
+              [pngBlob.type]: pngBlob
+            })
+          ]);
+          console.log("Image copied");
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      
+      const convertToPng = (imgBlob) => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        const imageEl = createImage({ src: window.URL.createObjectURL(imgBlob) });
+        imageEl.onload = (e) => {
+          canvas.width = e.target.width;
+          canvas.height = e.target.height;
+          ctx.drawImage(e.target, 0, 0, e.target.width, e.target.height);
+          canvas.toBlob(copyToClipboard, "image/png", 1);
+        };
+      };
+    const copyToClipboardImage = async () => {
+        const img = await fetch(croppedImage);
+        const imgBlob = await img.blob();
+        const extension = croppedImage.split(".").pop();
+        const supportedToBeConverted = ["jpeg", "jpg", "gif"];
+        if (supportedToBeConverted.indexOf(extension.toLowerCase())) {
+          return convertToPng(imgBlob);
+        } else if (extension.toLowerCase() === "png") {
+          return copyToClipboard(imgBlob);
+        }
+        console.error("Format unsupported");
+        return;
+    }
     React.useEffect(() => {
         chrome.storage.local.get("data", (data) => {
             setScreenshort(JSON.parse(data.data))
@@ -146,6 +192,11 @@ function ScreenShort() {
                     id="showResult"
                 >
                     Show Result
+                </a>
+                <a
+                    onClick={() => copyToClipboardImage()}
+                >
+                    Copy
                 </a>
             </div>
             <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
